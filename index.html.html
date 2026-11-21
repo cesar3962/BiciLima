@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BiciLima: rutas ciclistas, zonas de riesgo, estacionamientos y reportes ciudadanos.">
+<meta name="theme-color" content="#0f766e">
+<title>BiciLima | Muévete seguro en bicicleta</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--green:#0f766e;--dark:#102a2a;--muted:#607575;--paper:#f5f8f6;--line:#e1eae6;--lime:#bef264;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--dark);background:var(--paper)}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}.container{width:min(1160px,calc(100% - 40px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:#ffffffed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:1.25rem}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--lime);font-size:1.35rem}.nav-links{display:flex;gap:26px;color:#45605d;font-size:.93rem;font-weight:650}.nav-links a:hover{color:var(--green)}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:12px 19px;color:white;background:var(--green);font-weight:750;cursor:pointer}.btn:hover{background:#115e59}.btn-light{color:var(--dark);background:white;border:1px solid #cbdad3}
+.hero{padding:76px 0 64px;background:radial-gradient(circle at 85% 20%,#bef26455,transparent 27%),linear-gradient(135deg,#e9f5ee,#f8faf8 65%)}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:48px}.eyebrow{display:inline-block;padding:7px 12px;border:1px solid #cfe4d8;border-radius:999px;color:#115e59;background:#ffffffa8;font-size:.8rem;font-weight:800}h1{margin:18px 0;max-width:650px;font-size:clamp(2.6rem,5.5vw,4.6rem);line-height:.99;letter-spacing:-.065em}h1 span{color:var(--green)}.hero p{max-width:570px;color:var(--muted);font-size:1.1rem;line-height:1.75}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.hero-art{position:relative;min-height:350px;display:grid;place-items:center}.orbit{position:absolute;width:min(100%,390px);aspect-ratio:1;border:1px dashed #a8c7b5;border-radius:50%}.art-card{position:relative;width:min(100%,360px);padding:18px;border:1px solid white;border-radius:26px;background:#ffffffdf;box-shadow:0 18px 50px #102a2a1a;transform:rotate(2deg)}.art-map{height:230px;position:relative;overflow:hidden;border-radius:18px;background:#e5efe7;background-image:linear-gradient(35deg,transparent 46%,white 47%,white 51%,transparent 52%),linear-gradient(115deg,transparent 42%,white 43%,white 47%,transparent 48%),linear-gradient(5deg,transparent 68%,#c5ddca 69%,#c5ddca 72%,transparent 73%)}.route-line{position:absolute;width:65%;height:5px;top:48%;left:18%;border-radius:10px;background:var(--green);transform:rotate(-25deg);box-shadow:0 0 0 5px #0f766e22}.pin{position:absolute;display:grid;place-items:center;width:38px;height:38px;border:4px solid white;border-radius:50% 50% 50% 4px;color:white;background:var(--green);transform:rotate(-45deg);box-shadow:0 5px 15px #1233}.pin span{transform:rotate(45deg)}.pin.one{top:27%;left:20%}.pin.two{top:58%;right:17%;background:#ea580c}.map-caption{display:flex;justify-content:space-between;gap:12px;padding:14px 3px 2px;font-size:.86rem;font-weight:750}.map-caption small{display:block;margin-top:4px;color:var(--muted);font-weight:500}.status{color:var(--green)}
+section{padding:76px 0}.section-head{max-width:650px;margin-bottom:30px}.section-head h2{margin:0 0 10px;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-.05em}.section-head p{margin:0;color:var(--muted);line-height:1.7}.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.feature{padding:23px;border:1px solid var(--line);border-radius:20px;background:white;box-shadow:0 7px 25px #12308}.feature-icon{display:grid;place-items:center;width:48px;height:48px;margin-bottom:17px;border-radius:15px;background:#e7f4eb;font-size:1.45rem}.feature h3{margin:0 0 8px;font-size:1.05rem}.feature p{margin:0;color:var(--muted);font-size:.92rem;line-height:1.6}
+.explore{background:#edf4ef}.explore-grid,.report-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:28px;align-items:start}.panel{padding:24px;border:1px solid var(--line);border-radius:22px;background:white;box-shadow:0 18px 50px #102a2a12}.panel h3{margin:0 0 18px}.field{display:grid;gap:7px;margin-bottom:14px}.field label{font-size:.84rem;font-weight:750}.field input,.field select,.field textarea{width:100%;padding:12px 13px;border:1px solid #d8e4dd;border-radius:11px;outline:none;background:#fbfdfb}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px #0f766e18}.notice{padding:15px;border-radius:12px;color:#765018;background:#fff7df;font-size:.86rem;line-height:1.55}.map-wrap{min-height:420px;overflow:hidden;border:1px solid #d8e4dd;border-radius:22px;background:white}#map{height:420px;width:100%}.map-note{padding:10px 14px;color:var(--muted);font-size:.78rem}.report-grid{grid-template-columns:1fr 1fr}.success{display:none;margin-top:12px;padding:12px;border-radius:10px;color:#166534;background:#dcfce7;font-size:.9rem}footer{padding:30px 0;color:#c7d9d2;background:#102f2d}.footer-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.footer-row strong{color:white}
+@media(max-width:850px){.hero-grid,.explore-grid,.report-grid{grid-template-columns:1fr}.hero{padding-top:55px}.hero-art{min-height:310px}.features{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+@media(max-width:520px){.container{width:calc(100% - 28px)}.features{grid-template-columns:1fr}section{padding:55px 0}.hero-art{min-height:280px}.art-map{height:190px}.map-wrap,#map{height:350px;min-height:350px}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="#inicio"><span class="brand-mark">🚲</span>BiciLima</a>
+<nav class="nav-links" aria-label="Navegación"><a href="#funciones">Funciones</a><a href="#explorar">Explorar mapa</a><a href="#reportar">Reportar</a></nav>
+<a class="btn" href="#explorar">Explorar rutas</a>
+</div></header>
+<main>
+<section class="hero" id="inicio"><div class="container hero-grid">
+<div><span class="eyebrow">● MOVILIDAD URBANA MÁS SEGURA</span><h1>Pedalea Lima.<br><span>Muévete seguro.</span></h1>
+<p>Encuentra ciclovías, identifica zonas de riesgo y consulta estacionamientos para bicicletas. Una comunidad que comparte información para recorrer la ciudad con más confianza.</p>
+<div class="actions"><a class="btn" href="#explorar">Explorar el mapa →</a><a class="btn btn-light" href="#reportar">Reportar incidente</a></div></div>
+<div class="hero-art" aria-label="Ilustración de una ruta ciclista"><div class="orbit"></div><div class="art-card"><div class="art-map"><div class="route-line"></div><div class="pin one"><span>🚲</span></div><div class="pin two"><span>!</span></div></div><div class="map-caption"><div>Tu ciudad, mejor conectada<small>Rutas y puntos de interés</small></div><span class="status">● Mapa activo</span></div></div></div>
+</div></section>
+<section id="funciones"><div class="container"><div class="section-head"><h2>Todo lo que necesitas para pedalear</h2><p>Consulta información útil antes y durante tus recorridos por Lima.</p></div>
+<div class="features">
+<article class="feature"><div class="feature-icon">🗺️</div><h3>Rutas y ciclovías</h3><p>Explora la red de ciclovías y planifica tus desplazamientos.</p></article>
+<article class="feature"><div class="feature-icon">⚠️</div><h3>Zonas de riesgo</h3><p>Identifica puntos reportados por la comunidad para circular con precaución.</p></article>
+<article class="feature"><div class="feature-icon">🅿️</div><h3>Estacionamientos</h3><p>Ubica lugares señalados para estacionar tu bicicleta.</p></article>
+<article class="feature"><div class="feature-icon">📣</div><h3>Reportes ciudadanos</h3><p>Registra incidentes y comparte información relevante.</p></article>
+</div></div></section>
+<section class="explore" id="explorar"><div class="container"><div class="section-head"><h2>Explora el mapa de Lima</h2><p>Mapa interactivo de demostración. Los marcadores de ejemplo muestran cómo se visualizarán rutas y puntos reportados.</p></div>
+<div class="explore-grid"><div class="panel"><h3>Capas del mapa</h3><div class="field"><label for="filter">Mostrar información</label><select id="filter"><option value="all">Todos los puntos</option><option value="route">Ciclovías / rutas</option><option value="risk">Zonas de riesgo</option><option value="parking">Estacionamientos</option></select></div><div class="notice">Los puntos incluidos son datos demostrativos. No representan alertas verificadas ni rutas oficiales.</div></div>
+<div class="map-wrap"><div id="map" role="application" aria-label="Mapa interactivo de Lima"></div><div class="map-note">Mapa base © OpenStreetMap contributors. Requiere conexión a internet.</div></div></div></div></section>
+<section id="reportar"><div class="container"><div class="section-head"><h2>La seguridad la construimos entre todos</h2><p>Registra un reporte de demostración para mostrar el flujo de participación ciudadana.</p></div>
+<div class="report-grid"><div><h3>¿Encontraste un problema en tu recorrido?</h3><p style="color:var(--muted);line-height:1.7">Describe un incidente, una ciclovía deteriorada o una zona que requiera atención. En esta versión inicial el formulario solo muestra una confirmación local; todavía no guarda datos en un servidor.</p><div class="notice">No incluyas datos personales sensibles. Esta versión es un prototipo académico y no es un canal oficial de emergencias.</div></div>
+<form class="panel" id="reportForm"><h3>Nuevo reporte</h3>
+<div class="field"><label for="type">Tipo de reporte</label><select id="type" required><option value="">Selecciona una opción</option><option>Accidente o incidente</option><option>Ciclovía deteriorada</option><option>Zona de riesgo</option><option>Estacionamiento para bicicletas</option></select></div>
+<div class="field"><label for="place">Lugar o referencia</label><input id="place" type="text" placeholder="Ej. Av. Arequipa, Miraflores" maxlength="100" required></div>
+<div class="field"><label for="description">Descripción</label><textarea id="description" rows="3" maxlength="500" placeholder="Describe brevemente lo ocurrido..." required></textarea></div>
+<button class="btn" type="submit">Enviar reporte de prueba</button><div class="success" id="success" role="status">✓ Reporte de demostración registrado en esta vista. No se ha enviado a un servidor.</div>
+</form></div></div></section>
+</main>
+<footer><div class="container footer-row"><div><strong>🚲 BiciLima</strong><br><small>Movilidad segura para una ciudad en movimiento.</small></div><small>Proyecto académico · Versión demostrativa</small></div></footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const points=[
+ {type:'route',coords:[-12.1195,-77.0300],title:'Referencia de ciclovía',detail:'Punto ilustrativo de ruta ciclista.'},
+ {type:'risk',coords:[-12.1260,-77.0200],title:'Zona de precaución (demo)',detail:'Marcador de demostración, no es una alerta verificada.'},
+ {type:'parking',coords:[-12.1105,-77.0350],title:'Estacionamiento (demo)',detail:'Ubicación ilustrativa.'}
+];
+const map=L.map('map').setView([-12.119,-77.03],13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+const icons={route:'🚲',risk:'⚠️',parking:'🅿️'},layers=[];
+function drawPoints(filter){layers.forEach(layer=>map.removeLayer(layer));layers.length=0;points.filter(p=>filter==='all'||p.type===filter).forEach(p=>layers.push(L.marker(p.coords).addTo(map).bindPopup(`<strong>${icons[p.type]} ${p.title}</strong><br>${p.detail}`)));}
+drawPoints('all');
+document.getElementById('filter').addEventListener('change',e=>drawPoints(e.target.value));
+document.getElementById('reportForm').addEventListener('submit',e=>{e.preventDefault();const type=document.getElementById('type').value,place=document.getElementById('place').value.trim(),description=document.getElementById('description').value.trim();if(!type||!place||!description)return;document.getElementById('success').style.display='block';e.target.reset();});
+</script>
+</body></html>
